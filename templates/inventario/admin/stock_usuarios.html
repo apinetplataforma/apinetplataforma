@@ -1,0 +1,86 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block titulo %}Stock por usuario{% endblock %}
+
+{% block section2 %}
+<div class="container-fluid mt-5">
+
+    <h3 class="mb-4 text-center">Inventario De Usuarios y Bodega</h3>
+
+    <!-- FORMULARIO DE FILTROS -->
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-4">
+            {{ filter.form.usuario }}
+        </div>
+
+        <div class="col-md-4">
+            {{ filter.form.producto }}
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>Buscar</button>
+        </div>
+
+        <div class="col-md-2">
+            <a href="?" class="btn btn-secondary w-100">Limpiar</a>
+        </div>
+    </form>
+
+    <!-- TABLA -->
+    {% if object_list %}
+    <table class="table text-center align-middle table-hover w-100">
+        <thead class="table-dark">
+            <tr>
+                <th>Usuario</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Última actualización</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in stocks %}
+            <tr>
+                <td>{{ item.usuario.email }}</td>
+                <td>{{ item.producto.nombre }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>{{ item.modified|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <div class="alert alert-info mb-0">No hay stock registrado.</div>
+    {% endif %}
+
+    <!-- PAGINACIÓN -->
+    {% if page_obj %}
+    <nav>
+        <ul class="pagination justify-content-center">
+
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ querystring }}">Anterior</a>
+            </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">
+                    Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ querystring }}">Siguiente</a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+    {% endif %}
+
+</div>
+{% endblock %}

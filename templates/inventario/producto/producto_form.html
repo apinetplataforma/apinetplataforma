@@ -1,0 +1,41 @@
+{% extends "dashboard.html" %}
+{% block titulo %}{% if object %}Editar Producto{% else %}Crear Producto{% endif %}{% endblock titulo %}
+
+{% block section2 %}
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div class="card shadow w-50">
+        <div class="card-body">
+
+            <h3 class="card-title mb-4 text-center">
+                {% if object %}Editar Producto{% else %}Crear Producto{% endif %}
+            </h3>
+
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        {{ field }}
+
+                        {% for error in field.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <button type="submit" class="btn btn-primary w-100 me-2">
+                        {% if object %}Guardar Cambios{% else %}Crear Producto{% endif %}
+                    </button>
+
+                    <a href="{% url 'producto_list' %}" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

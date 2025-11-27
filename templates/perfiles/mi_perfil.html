@@ -1,0 +1,235 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Mi Perfil{% endblock %}
+
+{% block section2 %}
+<div class="container mt-4">
+
+    <!-- Fotos en fila horizontal con modal para ampliar -->
+    <div class="mb-4 d-flex flex-wrap gap-3 justify-content-start">
+        {% for foto, titulo in fotos_perfil %}
+            <div class="text-center" style="min-width: 150px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalFoto{{ forloop.counter }}">
+                <strong>{{ titulo }}</strong><br>
+                {% if foto %}
+                    <img src="{{ foto.url }}" class="img-thumbnail rounded" style="max-height: 150px; max-width: 150px; object-fit: cover;">
+                {% else %}
+                    <p class="text-muted">No disponible</p>
+                {% endif %}
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalFoto{{ forloop.counter }}" tabindex="-1" aria-labelledby="modalFotoLabel{{ forloop.counter }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalFotoLabel{{ forloop.counter }}">{{ titulo }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            {% if foto %}
+                                <img src="{{ foto.url }}" class="img-fluid rounded" style="max-height: 80vh; object-fit: contain;">
+                            {% else %}
+                                <p class="text-muted">No disponible</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- ====================================================== -->
+<!--     INFORMACIÓN EN 3 COLUMNAS CON DISEÑO UNIFORME      -->
+<!-- ====================================================== -->
+<div class="row g-4">
+
+    <!-- ====================================================== -->
+    <!-- COLUMNA 1 - INFORMACIÓN BÁSICA -->
+    <!-- ====================================================== -->
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Información Básica</h5>
+            </div>
+
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Usuario</strong>
+                    <span>{{ perfil.usuario.email|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Nombres</strong>
+                    <span>{{ perfil.nombres|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Apellidos</strong>
+                    <span>{{ perfil.apellidos|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Dirección</strong>
+                    <span>{{ perfil.direccion|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Teléfono</strong>
+                    <span>{{ perfil.telefono|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>WhatsApp</strong>
+                    <span>{{ perfil.whatsapp|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Fecha Nacimiento</strong>
+                    <span>{{ perfil.fecha_nacimiento|default:"No definida" }}</span>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- COLUMNA 2 - INFORMACIÓN LABORAL -->
+    <!-- ====================================================== -->
+    <div class="col-md-4">
+
+        <!-- Card 1 -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Información Laboral</h5>
+            </div>
+
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Cargo</strong>
+                    <span>{{ perfil.get_cargo_display|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Ingreso empresa</strong>
+                    <span>{{ perfil.fecha_ingreso_empresa|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Retiro empresa</strong>
+                    <span>{{ perfil.fecha_retiro_empresa|default:"No definida" }}</span>
+                </li>
+
+            </ul>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Formación y Cursos</h5>
+            </div>
+
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Nivel educativo</strong>
+                    <span>{{ perfil.get_nivel_educativo_display|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Curso altura</strong>
+                    <span>
+                        {% if perfil.curso_altura == None %}
+                            No definida
+                        {% elif perfil.curso_altura %}
+                            Sí
+                        {% else %}
+                            No
+                        {% endif %}
+                    </span>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- COLUMNA 3 - ESTADO CIVIL Y OTROS -->
+    <!-- ====================================================== -->
+    <div class="col-md-4">
+
+        <!-- Card 1 -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Estado Civil y Familia</h5>
+            </div>
+
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Estado civil</strong>
+                    <span>{{ perfil.get_estado_civil_display|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Cónyuge</strong>
+                    <span>
+                        {% if perfil.conyugue == None %}
+                            No definida
+                        {% elif perfil.conyugue %}
+                            Sí
+                        {% else %}
+                            No
+                        {% endif %}
+                    </span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Nombre cónyuge</strong>
+                    <span>{{ perfil.nombre_conyugue|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Teléfono cónyuge</strong>
+                    <span>{{ perfil.telefono_conyugue|default:"No definida" }}</span>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Hijos</strong>
+                    <span>
+                        {% if perfil.hijos == None %}
+                            No definida
+                        {% elif perfil.hijos %}
+                            Sí
+                        {% else %}
+                            No
+                        {% endif %}
+                    </span>
+                </li>
+
+            </ul>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Otros Datos</h5>
+            </div>
+
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Género</strong>
+                    <span>{{ perfil.get_genero_display|default:"No definida" }}</span>
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

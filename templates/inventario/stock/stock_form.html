@@ -1,0 +1,110 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Agregar Producto a Bodega{% endblock %}
+
+{% block section2 %}
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div class="card shadow w-75" style="max-width: 800px;">
+        <div class="card-body">
+            <h3 class="card-title mb-4 text-center">Mover Producto</h3>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="row">
+
+                    <!-- Columna 1 -->
+                    <div class="col-md-6">
+
+                        <div class="mb-3">
+                            <label for="{{ form.usuario_origen.id_for_label }}" class="form-label">Usuario Origen</label>
+                            {{ form.usuario_origen }}
+                            {% for error in form.usuario_origen.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.producto.id_for_label }}" class="form-label">Producto</label>
+                            {{ form.producto }}
+                            {% for error in form.producto.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.cantidad_movida.id_for_label }}" class="form-label">Cantidad a mover</label>
+                            {{ form.cantidad_movida }}
+                            {% for error in form.cantidad_movida.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- MOVIMIENTO AHORA EN COLUMNA 1 -->
+                        <fieldset class="mb-3">
+                            <legend class="form-label">{{ form.movimiento.label }}</legend>
+                            {% for radio in form.movimiento %}
+                                <div class="form-check form-check-inline">
+                                    {{ radio.tag }}
+                                    <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                        {{ radio.choice_label }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                            {% for error in form.movimiento.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </fieldset>
+
+                    </div>
+
+                    <!-- Columna 2 -->
+                    <div class="col-md-6">
+
+                        <div class="mb-3">
+                            <label for="{{ form.usuario_destino.id_for_label }}" class="form-label">Usuario Destino</label>
+                            {{ form.usuario_destino }}
+                            {% for error in form.usuario_destino.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- MOTIVO AHORA EN COLUMNA 2 -->
+                        <div class="mb-3">
+                            <label for="{{ form.motivo.id_for_label }}" class="form-label">Motivo</label>
+                            {{ form.motivo }}
+                            {% for error in form.motivo.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.motivo_personalizado.id_for_label }}" class="form-label">Motivo Personalizado</label>
+                            {{ form.motivo_personalizado }}
+                            {% for error in form.motivo_personalizado.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.codigo_ticket.id_for_label }}" class="form-label">Código Ticket</label>
+                            {{ form.codigo_ticket }}
+                            {% for error in form.codigo_ticket.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-center align-items-center">
+                    <button type="submit" class="btn btn-primary w-50 me-2">Agregar</button>
+                    <a class="btn btn-secondary w-50" href="{% url 'stock_list' %}" role="button">Cancelar</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

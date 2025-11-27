@@ -1,0 +1,40 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Listado de Vehículos{% endblock %}
+
+{% block section2 %}
+<div class="container mt-4">
+
+    <h3 class="mb-4 text-center">Mis Vehículos</h3>
+
+    {% if vehiculos %}
+    <table class="table text-center align-middle table-hover w-100">
+        <thead class="table-dark">
+            <tr>
+                <th>Usuario</th>
+                <th>Marca</th>
+                <th>Placas</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vehiculo in vehiculos %}
+            <tr>
+                <td>{{ vehiculo.usuario.email }}</td>
+                <td>{{ vehiculo.marca }}</td>
+                <td>{{ vehiculo.placas_vehiculo }}</td>
+                <td>
+                    <a href="{% url 'vehiculousuario_detail' vehiculo.pk %}" class="btn btn-info btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ver">
+                        <i class="bi bi-eye fs-5"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <div class="alert alert-info">No hay vehículos registrados.</div>
+    {% endif %}
+</div>
+{% endblock %}

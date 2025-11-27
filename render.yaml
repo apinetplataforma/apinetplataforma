@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: apinetplataforma
+    env: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn apinetplataforma.wsgi"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: apinetplataforma.settings
+      - key: PYTHON_VERSION
+        value: 3.10
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+
+databases:
+  - name: apinet-db
+    databaseName: apinetdb
+    user: apinetuser
+    plan: free

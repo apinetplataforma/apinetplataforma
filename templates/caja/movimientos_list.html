@@ -1,0 +1,171 @@
+{% extends "dashboard.html" %}
+{% load fechas_extras %}
+{% load humanize %}
+{% load static %}
+{% block titulo %}Movimientos de Caja{% endblock %}
+
+{% block section2 %}
+<div class="container-fluid mt-5">
+
+    <!-- ===================== FILA 1 – TÍTULO ===================== -->
+    <h3 class="mb-4 text-center">Movimientos de Caja</h3>
+
+    <!-- ===================== FILA 2 – SALDO ===================== -->
+    <div class="d-flex justify-content-start mb-4">
+        <div class="card bg-warning shadow-sm" style="width: 22rem;">
+            <div class="card-body text-center">
+                <span class="fw-bold d-block" style="font-size: 1.2rem;">SALDO ACTUAL</span>
+                <span style="font-size: 2.5rem; color: #dc3545; font-weight: 700;">
+                    ${{ saldo_actual|floatformat:0|intcomma }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== FILA 3 – BOTONES ===================== -->
+    <div class="d-flex justify-content-end align-items-center mb-4 flex-wrap gap-2">
+
+        <a href="{% url 'caja_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Nuevo Movimiento
+        </a>
+        <a href="{% url 'exportar_caja' %}?{{ request.GET.urlencode }}" class="btn btn-warning"><i class="bi bi-download me-2"></i>Exportar Caja Excel</a>
+
+        <form action="{% url 'saldo_reset' request.user.id %}" method="post" class="m-0">
+            {% csrf_token %}
+            <button class="btn btn-danger"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="Recuerda que se pierde la información">
+                Resetear saldo
+            </button>
+        </form>
+
+    </div>
+
+    <!-- ===================== FILA 4 – FILTROS ===================== -->
+    <form method="get" class="mb-4">
+
+        <div class="row align-items-end g-3">
+
+            <div class="col-md-3">
+                <label class="form-label">Tipo de Movimiento</label>
+                {{ filter.form.tipo_movimiento }}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Fecha desde</label>
+                {{ filter.form.fecha_inicio }}
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Fecha hasta</label>
+                {{ filter.form.fecha_fin }}
+            </div>
+
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>Buscar</button>
+                <a href="{% url 'caja_list' %}" class="btn btn-secondary w-100">Resetear</a>
+            </div>
+        </div>
+
+    </form>
+
+    
+
+
+    <!-- ===================== FILA 5 – TABLA ===================== -->
+    {% if movimientos %}
+    
+    <table class="table text-center align-middle table-hover w-100">
+        <thead class="table-dark">
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Tipo</th>
+                <th>Motivo</th>
+                <th>Cantidad movida</th>
+                <th>Saldo resultante</th>
+                <th>Info Adicional</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mov in movimientos %}
+            <tr>
+                <td>{{ mov.created.day }}-{{ mov.created|mes_es_abrev }}-{{ mov.created.year }}</td>
+                <td>{{ mov.created|date:"h:i A" }}</td>
+                <td>{{ mov.get_tipo_movimiento_display }}</td>
+                <td>{{ mov.get_motivo_movimiento_display }}</td>
+                <td>${{ mov.cantidad_movida|floatformat:0|intcomma }}</td>
+                <td>${{ mov.saldo_resultante|floatformat:0|intcomma }}</td>
+                <td>{{ mov.info_adicional }}</td>
+                <td>
+                    <a href="{% url 'caja_update' mov.pk %}" class="btn btn-warning btn-sm me-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Editar">
+                        <i class="bi bi-pencil fs-5"></i>
+                    </a>
+                    <a href="{% url 'caja_delete' mov.pk %}" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Elilminar">
+                        <i class="bi bi-trash3 fs-5"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    {% else %}
+    <p class="text-muted mt-3 text-center fs-5">No hay movimientos registrados.</p>
+    {% endif %}
+
+    <!-- Paginación -->
+    <div class="d-flex justify-content-center mt-4">
+        {% if is_paginated %}
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-primary me-2" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                    Anterior
+                </a>
+            {% endif %}
+
+            <span class="btn btn-secondary disabled">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-primary ms-2" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                    Siguiente
+                </a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+</div>
+
+{% if messages %}
+    {% for m in messages %}
+        
+        <div id="django-message-trigger" data-msg-type="{{ m.tags }}"></div>
+    {% endfor %}
+{% endif %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const msgElement = document.getElementById("django-message-trigger");
+
+    // Si no hay mensaje, no hacemos nada
+    if (!msgElement) return;
+
+    const tipo = msgElement.dataset.msgType;
+
+    // Reproduce sonido solo si es un éxito
+    if (tipo === "success") {
+
+        const audio = new Audio("{% static 'sound/cashregister.mp3' %}");
+
+        // Reproducción segura para móviles y navegadores
+        audio.volume = 1.0;
+
+        audio.play().catch(err => {
+            console.log("Error al reproducir audio:", err);
+        });
+    }
+});
+</script>
+{% endblock %}

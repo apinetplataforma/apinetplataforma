@@ -1,0 +1,107 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Lista de Usuarios{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">{% endblock extra_css %}
+{% block section2 %}
+<div class="container-fluid mt-5">
+
+    <!-- Título con botón, centrado y separado -->
+    <h2 class="mb-4 text-center">Gestion De Usuarios</h2>
+
+    <!-- Cards con totales -->
+    <div class="row mb-4 g-3 justify-content-center">
+        <div class="col-sm-6 col-md-3">
+            <div class="card text-body bg-body h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total Usuarios</h5>
+                    <p class="card-text fs-3 fw-bold">{{ total_usuarios }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card text-body bg-body h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Usuarios Inactivos</h5>
+                    <p class="card-text fs-3 fw-bold">{{ total_inactivos|default:"0" }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="card text-body bg-body h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Administradores</h5>
+                    <p class="card-text fs-3 fw-bold">{{ total_administradores }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+        
+    <div class="d-flex mb-4 justify-content-end">
+        <a href="{% url 'crear_usuario' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Crear Nuevo Usuario
+        </a>
+    </div>
+    
+
+    <!-- Tabla de usuarios -->
+    {% if usuarios %}
+    <table class="table text-center align-middle table-hover shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Usuario</th>
+                <th>Activo</th>
+                <th>Administrador</th>
+                
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td class="text-center">{{ usuario.email }}</td>
+                <td>
+                    {% if usuario.is_active %}
+                        <span class="text-success fs-5">
+                            <i class="bi bi-check2-circle text-success fs-3"></i>
+                        </span>
+                    {% else %}
+                        <span class="text-danger fs-5">
+                            <i class="bi bi-x-circle text-danger fs-3"></i>
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if usuario.is_staff %}
+                        <span class="text-success fs-5">
+                            <i class="bi bi-check2-circle text-success fs-3"></i>
+                        </span>
+                    {% else %}
+                        <span class="text-danger fs-5">
+                            <i class="bi bi-x-circle text-danger fs-3"></i>
+                        </span>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                        <a href="{% url 'editar_usuario' usuario.pk %}" class="btn btn-warning"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Editar">
+                            <i class="bi bi-pencil fs-5"></i>
+                        </a>
+        
+                        <a href="{% url 'eliminar_usuario' usuario.pk %}" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Eliminar">
+                            <i class="bi bi-trash3 fs-5"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <p class="alert alert-info mb-0">No hay usuarios registrados.</p>
+    {% endif %}
+</div>
+{% endblock %}

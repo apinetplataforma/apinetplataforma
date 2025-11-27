@@ -1,0 +1,28 @@
+{% extends "dashboard.html" %}
+{% block titulo %}Eliminar Stock{% endblock %}
+
+{% block section2 %}
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div class="card shadow w-50">
+        <div class="card-body text-center">
+
+            <h4 class="mb-4">¿Estás seguro de eliminar este registro de stock?</h4>
+
+            <p><strong>Producto:</strong> {{ object.producto.nombre }}</p>
+            <p><strong>Proveedor:</strong> {{ object.proveedor.nombre }}</p>
+            <p><strong>Categoría:</strong> {{ object.categoria.nombre }}</p>
+            <p><strong>Cantidad:</strong> {{ object.cantidad }}</p>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <button type="submit" class="btn btn-danger w-100 mb-2">Eliminar</button>
+
+                <a href="{% url 'stock_list' %}" class="btn btn-secondary w-100">
+                    Cancelar
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

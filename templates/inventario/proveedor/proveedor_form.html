@@ -1,0 +1,34 @@
+{% extends "dashboard.html" %}
+{% block titulo %}{% if object %}Editar Proveedor{% else %}Crear Proveedor{% endif %}{% endblock titulo %}
+
+{% block section2 %}
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div class="card shadow w-50">
+        <div class="card-body">
+            <h3 class="card-title mb-4 text-center">
+                {% if object %}Editar Proveedor{% else %}Crear Proveedor{% endif %}
+            </h3>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        {{ field }}
+                        {% for error in field.errors %}
+                            <div class="text-danger small">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-center align-items-center">
+                    <button type="submit" class="btn btn-primary w-100 me-2">
+                        {% if object %}Guardar Cambios{% else %}Crear Proveedor{% endif %}
+                    </button>
+                    <a class="btn btn-secondary" href="{% url 'proveedor_list' %}" role="button">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Eliminar Movimiento{% endblock %}
+
+{% block section2 %}
+
+
+<!--  contenedor -->
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+
+    <!--  card -->
+    <div class="card shadow" style="max-width: 400px;">
+
+        <!--  cuerpo de la carta -->
+        <div class="card-body text-center">
+
+            <!--  titulo  -->
+            <h4 class="mb-3">¿Seguro que deseas eliminar este movimiento?</h4>
+
+            <!--  cuerpo -->
+            <p>
+                <strong>Tipo:</strong> {{ movimiento.get_tipo_movimiento_display }}<br>
+                <strong>Motivo:</strong> {{ movimiento.get_motivo_movimiento_display }}<br>
+                <strong>Cantidad:</strong> ${{ movimiento.cantidad_movida }}<br>
+            </p>
+
+            <!--  formulario -->
+            <form action="" method="post">
+                {% csrf_token %}
+
+                <!--  botones -->
+                <button class="btn btn-danger">Eliminar definitivamente</button>
+                <a href="{% url 'caja_list' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+
+        
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Editar Usuario{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+{% endblock extra_css %}
+
+{% block section2 %}
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+
+    <div class="card shadow" style="max-width: 400px;">
+
+        <div class="card-body text-center">
+
+            <h4 class="card-title mb-4 text-center">Editar Usuario</h4>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <!-- EMAIL -->
+                <div class="mb-3">
+                    
+                    {{ form.email }}
+                    {% for error in form.email.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <!-- PASSWORD con ojito Bootstrap -->
+                <div class="mb-3">
+                    
+                    <div class="input-group">
+                        {{ form.password }}
+                        <span class="input-group-text toggle-password" style="cursor:pointer;">
+                            <i class="bi bi-eye-slash"></i>
+                        </span>                        
+                    </div>
+
+                    {% for error in form.password.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <!-- IS ACTIVE -->
+                <div class="d-flex justify-content-start mb-3">
+                    {{ form.is_active }}
+                    {% if form.is_active.help_text %}
+                        <small class="form-text text-muted mx-2">{{ form.is_active.help_text }}</small>
+                    {% endif %}
+                    {% for error in form.is_active.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <!-- IS STAFF -->
+                <div class="d-flex justify-content-start mb-3">
+                    {{ form.is_staff }}
+                    {% if form.is_staff.help_text %}
+                        <small class="form-text text-muted mx-2">{{ form.is_staff.help_text }}</small>
+                    {% endif %}
+                    {% for error in form.is_staff.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                
+                <div class="d-flex justify-content-center align-items-center">
+                    <button type="submit" class="btn btn-warning w-50 me-2">Actualizar</button>
+                    <a class="btn btn-secondary w-50" href="{% url 'lista_usuarios' %}" role="button">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".toggle-password").forEach(function (btn) {
+
+        btn.addEventListener("click", function () {
+
+            const input = this.previousElementSibling;
+            const icon = this.querySelector("i");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            } else {
+                input.type = "password";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Confirmar Eliminación{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+{% endblock extra_css %}
+
+{% block section2 %}
+
+<div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+
+    <div class="card shadow" style="max-width: 400px;">
+
+        <div class="card-body text-center">
+
+            <h3 class="card-title mb-4 text-center">Eliminar Usuario</h3>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <div class="mb-3 d-flex flex-row text-center form-check p-2 mb-4">
+                    {{ form.confirmacion }}
+                    <label for="{{ form.confirmacion.id_for_label }}" class="form-check-label">
+                        Confirmo que quiero eliminar este usuario permanentemente.
+                    </label>
+                    {% for error in form.confirmacion.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex justify-content-center align-items-center">
+                    <button type="submit" class="btn btn-danger w-50 me-2">Eliminar Perfil</button>
+                    <a class="btn btn-secondary w-50" href="{% url 'perfilusuario_list' %}" role="button">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

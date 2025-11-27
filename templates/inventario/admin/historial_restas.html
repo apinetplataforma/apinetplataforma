@@ -1,0 +1,152 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}
+Historial de Restas (Admin)
+{% endblock %}
+
+{% block section2 %}
+<div class="container-fluid mt-5">
+
+    <h3 class="mb-4 text-center">Historial de material gastado por cada técnico</h3>
+
+    <!-- ===================================== -->
+    <!-- FILA DE REGLAS + FILTROS -->
+    <!-- ===================================== -->
+    <div class="row g-4">
+
+        <!-- ========== CARD REGLAS ========== -->
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-header text-bg-dark">
+                    <h5 class="mb-0">Reglas y Procedimientos (Administrador)</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mt-4">
+                        <li class="mb-3">El administrador puede consultar las restas realizadas por todos los técnicos.</li>
+                        <li class="mb-3">Los movimientos pueden deshacerse si fueron realizadas por error si el técnico lo solicita.</li>
+                        <li class="mb-3">Cuando se deshace una resta, el material vuelve automáticamente al stock del técnico.</li>
+                        <li class="mb-3">Las transferencias de material entre técnicos deben ser registradas por el administrador.</li>
+                        <li class="mb-3">El historial sirve como evidencia de movimientos y no debe manipularse sin justificación.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== CARD FILTROS ========== -->
+        <div class="col-12 col-lg-4">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-header text-bg-dark">
+                    <h5 class="mb-0">Filtros</h5>
+                </div>
+
+                <div class="card-body">
+                    <form method="get">
+                        <div class="row g-3">
+
+                            <div class="col-md-12">
+                                {{ filter.form.usuario }}
+                            </div>
+
+                            <div class="col-md-12">
+                                {{ filter.form.producto }}
+                            </div>
+
+                            <div class="col-md-12">
+                                {{ filter.form.fecha_inicio }}
+                            </div>
+
+                            <div class="col-md-12">
+                                {{ filter.form.fecha_fin }}
+                            </div>
+
+                            <div class="col-12 mt-3">
+                                <button class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>Buscar</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================= -->
+    <!-- TABLA -->
+    <!-- ============================= -->
+    {% if restas %}
+    <div class="table-responsive mt-4">
+        <table class="table text-center align-middle table-hover w-100">
+            <thead class="table-dark">
+                <tr>
+                    <th>Usuario</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Referencia</th>
+                    <th>Fecha</th>
+                    <th>Deshacer Movimiento</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mov in restas %}
+                <tr>
+                    <td>{{ mov.usuario.email }}</td>
+                    <td>{{ mov.producto.nombre }}</td>
+                    <td>{{ mov.cantidad_movida }}</td>
+
+                    <td>
+                        {% if mov.check_motivo_personalizado %}
+                            —
+                        {% else %}
+                            {{ mov.get_motivo_display }}
+                        {% endif %}
+                    </td>
+
+                    <td>{{ mov.motivo_personalizado|default:"—" }}</td>
+
+                    <td>{{ mov.created|date:"d/m/Y H:i" }}</td>
+
+                    <td>
+                        <a href="{% url 'eliminar_resta' mov.id %}" 
+                           class="btn btn-danger" data-bs-toggle="tooltip" title="Eliminar">
+                            <i class="bi bi-trash fs-5"></i>
+                        </a>
+                    </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+        <div class="alert alert-info text-center mt-4">
+            No hay restas registradas aún.
+        </div>
+    {% endif %}
+
+    <!-- PAGINACIÓN -->
+    <div class="d-flex justify-content-center mt-3">
+        {% if page_obj.has_previous %}
+            <a class="btn btn-outline-primary me-2" href="?page={{ page_obj.previous_page_number }}">
+                Anterior
+            </a>
+        {% endif %}
+
+        <span class="btn btn-secondary disabled">
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a class="btn btn-outline-primary ms-2" href="?page={{ page_obj.next_page_number }}">
+                Siguiente
+            </a>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

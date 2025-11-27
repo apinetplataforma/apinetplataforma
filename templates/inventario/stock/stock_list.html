@@ -1,0 +1,174 @@
+{% extends "dashboard.html" %}
+{% block titulo %}Lista de Stock{% endblock %}
+
+{% block section2 %}
+<div class="container-fluid mt-5">
+
+    <!-- ===================== TÍTULO ===================== -->
+    <h2 class="mb-4 text-center">Historial General De Todos Los Movimientos</h2>
+
+    <!-- ===================== REGLAS + FILTROS EN UNA MISMA FILA ===================== -->
+    <div class="row g-4 mb-4">
+
+        <!-- REGLAS -->
+        <div class="col-lg-4 col-md-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Reglas y Procedimientos</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>Historial informativo.</li>
+                        <li>Manipulación solo por administradores.</li>
+                        <li>Muestra movimientos de todos los usuarios.</li>
+                        <li>Transferencias verificadas entre técnicos.</li>
+                        <li>Surtido de bodega.</li>
+                        <li>Productos desechados.</li>
+                        <li>Auditoría interna.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="col-lg-8 col-md-12">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white text-center">
+                    <h5 class="mb-0">Filtros</h5>
+                </div>
+
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Usuario</label>
+                            {{ filter.form.usuario }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Usuario Origen</label>
+                            {{ filter.form.usuario_origen }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Usuario Destino</label>
+                            {{ filter.form.usuario_destino }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Producto</label>
+                            {{ filter.form.producto }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha Inicio</label>
+                            {{ filter.form.fecha_inicio }}
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Fecha Fin</label>
+                            {{ filter.form.fecha_fin }}
+                        </div>
+
+                        <div class="col-12 d-flex gap-2 mt-3">
+                            <button class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>Buscar</button>
+                            <a href="{% url 'stock_list' %}" class="btn btn-secondary w-100">Reset</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end">
+        <!-- ===================== BOTÓN CREAR ===================== -->
+        <div class="me-2">
+            <a href="{% url 'agregar_producto_bodega' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Movimiento
+            </a>
+        </div>
+
+        <!-- ===================== BOTÓN EXPORTAR ===================== -->
+        <div>
+            <a href="{% url 'exportar_stock' %}?{{ request.GET.urlencode }}" 
+            class="btn btn-warning mb-3">
+                <i class="bi bi-download me-2"></i> Exportar a Excel
+            </a>
+        </div>
+    </div>
+    
+
+    <!-- ===================== TABLA ===================== -->
+    {% if object_list %}
+    <table class="table text-center align-middle table-hover w-100">
+        <thead class="table-dark">
+            <tr>
+                <th>Usuario</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th>Cantidad</th>
+                <th>Producto</th>
+                <th>Movimiento</th>
+                <th>Motivo</th>
+                <th>Referencia</th>
+                <th>Ticket</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in stocks %}
+                <tr>
+                    <td>{{ item.usuario.email }}</td>
+                    <td>{{ item.created|date:"d/m/Y" }}</td>
+                    <td>{{ item.created|date:" H:i" }}</td>
+                    <td>
+                        {% if item.usuario_origen %}
+                            {{ item.usuario_origen.email }}
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger fs-5"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.usuario_destino %}
+                            {{ item.usuario_destino.email }}
+                        {% else %}
+                            <i class="bi bi-x-circle text-danger fs-5"></i>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ item.cantidad_movida }}</strong></td>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td>{{ item.get_movimiento_display }}</td>
+                    <td>{{ item.get_motivo_display|default:"—" }}</td>
+                    <td>{{ item.motivo_personalizado|default:"—" }}</td>
+                    <td>{{ item.codigo_ticket|default:"—" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info mb-0">No hay movimientos de stock registrados.</div>
+    {% endif %}
+
+    <!-- ===================== PAGINACIÓN ===================== -->
+    <div class="d-flex justify-content-center mt-3">
+        {% if is_paginated %}
+            {% if page_obj.has_previous %}
+                <a class="btn btn-outline-primary me-2" href="?page={{ page_obj.previous_page_number }}">
+                    Anterior
+                </a>
+            {% endif %}
+            <span class="btn btn-secondary disabled">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+                <a class="btn btn-outline-primary ms-2" href="?page={{ page_obj.next_page_number }}">
+                    Siguiente
+                </a>
+            {% endif %}
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

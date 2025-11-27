@@ -1,0 +1,29 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block section2 %}
+<div class="container mt-4">
+    <h3>Restar Producto</h3>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            {{ form.producto.label_tag }}
+            {{ form.producto }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.cantidad.label_tag }}
+            {{ form.cantidad }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.motivo.label_tag }}
+            {{ form.motivo }}
+        </div>
+
+        <button class="btn btn-danger" type="submit">Restar</button>
+    </form>
+</div>
+{% endblock section2 %}

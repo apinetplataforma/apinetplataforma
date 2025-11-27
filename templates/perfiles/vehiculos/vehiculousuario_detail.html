@@ -1,0 +1,152 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Detalle Vehículo{% endblock %}
+
+{% block section2 %}
+<div class="container mt-4">
+
+    {% if user.is_staff %}
+    <div class="d-flex gap-2 mt-4 mb-4">
+        <a href="{% url 'vehiculousuario_update' vehiculo.pk %}" class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Editar">
+            <i class="bi bi-pencil fs-5"></i>
+        </a>
+        <a href="{% url 'vehiculousuario_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left fs-5 me-2"></i>Volver al listado
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- ===================== FOTOS DEL VEHÍCULO ====================== -->
+    <div class="mb-4 d-flex flex-wrap gap-3 justify-content-start">
+
+        {% for foto, titulo in fotos_vehiculo %}
+            <div class="text-center" style="min-width: 150px; cursor: pointer;" 
+                 data-bs-toggle="modal" data-bs-target="#modalFoto{{ forloop.counter }}">
+                <strong>{{ titulo }}</strong><br>
+
+                {% if foto %}
+                    <img src="{{ foto.url }}" class="img-thumbnail rounded" 
+                         style="max-height:150px; max-width:150px; object-fit:cover;">
+                {% else %}
+                    <p class="text-muted">No disponible</p>
+                {% endif %}
+            </div>
+
+            <!-- Modal ampliado -->
+            <div class="modal fade" id="modalFoto{{ forloop.counter }}" tabindex="-1" 
+                aria-labelledby="modalFotoLabel{{ forloop.counter }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalFotoLabel{{ forloop.counter }}">
+                                {{ titulo }}
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            {% if foto %}
+                                <img src="{{ foto.url }}" class="img-fluid rounded" 
+                                     style="max-height:80vh; object-fit:contain;">
+                            {% else %}
+                                <p class="text-muted">No disponible</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- ===================== INFORMACIÓN EN CARDS ====================== -->
+    <div class="row g-4">
+
+        <!-- Columna 1 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Información del vehículo</h5>
+        </div>
+
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex justify-content-between">
+            <strong>Usuario</strong>
+            <span>{{ vehiculo.usuario.email }}</span>
+        </li>
+
+        <li class="list-group-item d-flex justify-content-between">
+            <strong>Tipo de Vehículo</strong>
+            <span>{{ vehiculo.get_tipo_vehiculo_display }}</span>
+        </li>
+
+        <li class="list-group-item d-flex justify-content-between">
+            <strong>Marca</strong>
+            <span>{{ vehiculo.marca }}</span>
+        </li>
+
+        <li class="list-group-item d-flex justify-content-between">
+            <strong>Placas</strong>
+            <span>{{ vehiculo.placas_vehiculo }}</span>
+        </li>
+    </ul>
+</div>
+
+        </div>
+
+        <!-- Columna 2 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Vencimiento De Documentos</h5>
+                </div>
+
+                <ul class="list-group list-group-flush">
+
+                    <!-- SOAT -->
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Soat</strong>
+                        {% if vehiculo.soat %}
+                            <span>{{ vehiculo.soat|date:"d/m/Y" }}</span>
+                        {% else %}
+                            <span class="text-muted">Sin fecha</span>
+                        {% endif %}
+                    </li>
+
+                    <!-- Tecnomecánico -->
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Tecnomecánico</strong>
+                        {% if vehiculo.tecnomecanico %}
+                            <span>{{ vehiculo.tecnomecanico|date:"d/m/Y" }}</span>
+                        {% else %}
+                            <span class="text-muted">Sin fecha</span>
+                        {% endif %}
+                    </li>
+
+                    <!-- Tarjeta de Propiedad -->
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Tarjeta Propiedad</strong>
+                        {% if vehiculo.tarjeta_propiedad %}
+                            <span>{{ vehiculo.tarjeta_propiedad|date:"d/m/Y" }}</span>
+                        {% else %}
+                            <span class="text-muted">Sin fecha</span>
+                        {% endif %}
+                    </li>
+
+                    <!-- Pase de Conducir -->
+                    <li class="list-group-item d-flex justify-content-between">
+                        <strong>Pase Conducir</strong>
+                        {% if vehiculo.pase_conducir %}
+                            <span>{{ vehiculo.pase_conducir|date:"d/m/Y" }}</span>
+                        {% else %}
+                            <span class="text-muted">Sin fecha</span>
+                        {% endif %}
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+    
+
+</div>
+{% endblock %}

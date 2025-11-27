@@ -1,0 +1,56 @@
+{% extends "dashboard.html" %}
+{% block titulo %}Lista de Categorías{% endblock %}
+
+{% block section2 %}
+<div class="container-fluid mt-5">
+
+    <!-- Título centrado -->
+    <h2 class="mb-4 text-center">Categorías Registradas</h2>
+
+    <!-- Botón nueva categoría alineado a la derecha -->
+    <div class="d-flex mb-4 justify-content-end">
+        <a href="{% url 'categoria_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Nueva Categoría
+        </a>
+    </div>
+
+    <!-- Tabla -->
+    {% if object_list %}
+    <table class="table text-center align-middle table-hover w-100">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for categoria in object_list %}
+            <tr>
+                <td>{{ categoria.nombre }}</td>
+                <td>{{ categoria.descripcion|default:"-" }}</td>
+                <td>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+
+                        <a href="{% url 'categoria_update' categoria.pk %}" class="btn btn-warning btn-sm"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Editar">
+                            <i class="bi bi-pencil fs-5"></i>
+                        </a>
+
+                        <a href="{% url 'categoria_delete' categoria.pk %}" class="btn btn-danger btn-sm"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Eliminar">
+                            <i class="bi bi-trash fs-5"></i>
+                        </a>
+
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    {% else %}
+    <p  class="alert alert-info">No hay categorías registradas.</p>
+    {% endif %}
+
+</div>
+{% endblock %}

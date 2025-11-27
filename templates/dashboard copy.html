@@ -1,0 +1,327 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/notificaciones.css' %}" />
+    <title>{% block titulo %}Dashboard{% endblock titulo %}</title>
+    {% block extra_css %}{% endblock extra_css %}
+    <style>
+      
+    </style>
+</head>
+<body id="contenedor-body-dashboard" data-bs-theme="light">
+
+    <!-- Sidebar para desktop (solo visible lg+) -->
+    <aside class="desktop-sidebar shadow-sm p-2 d-none d-lg-flex flex-column">
+
+        <!-- contenido original del aside -->
+        <a href="{% url 'dashboard' %}" class="text-decoration-none text-body">
+            <header class="d-flex flex-row justify-content-center align-items-center">
+                <i class="bi bi-router-fill fs-2 me-2"></i>
+                <h3 class="m-0">Apinet.com</h3>
+            </header>
+        </a>
+
+        <main>
+            {% if user.is_staff %}
+            <div class="card mb-3">
+                <div class="card-header bg-dark text-white text-center">
+                    <i class="bi bi-person-gear me-2 fs-5"></i>Administrador
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="{% url 'lista_usuarios' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-people-fill me-3 fs-5"></i> Gestión de Usuarios
+                        </a>
+                    </li>
+                    <!-- demás links igual -->
+                    <li class="list-group-item">
+                        <a href="{% url 'proveedor_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-buildings me-3 fs-5"></i> Gestión de Proveedores
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'categoria_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-intersect me-3 fs-5"></i> Gestión de Categorías
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'producto_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-box me-3 fs-5"></i> Gestión de Productos
+                        </a>
+                    </li>
+                    <li class="list-group-item mb-1">
+                        <a href="{% url 'stock_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-clock-history me-3 fs-5"></i> Historial de Movimientos
+                        </a>
+                    </li>
+                    <li class="list-group-item mb-1">
+                        <a href="{% url 'historial_restas_admin' %}" class="text-decoration-none d-flex align-items-center text-body">
+                            <i class="bi bi-arrow-down-circle-fill me-3 fs-5"></i> Movimientos de Tecnicos
+                        </a>
+                    </li>
+                    <li class="list-group-item mb-1">
+                        <a href="{% url 'stock_usuarios_admin' %}" class="text-decoration-none d-flex align-items-center text-body">
+                            <i class="bi bi-arrow-down-circle-fill me-3 fs-5"></i> Stock de cada usuario
+                        </a>
+                    </li>
+                    <li class="list-group-item mb-1">
+                        <a href="{% url 'perfilusuario_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-person-lines-fill fs-5 me-3"></i> Perfiles
+                        </a>
+                    </li>
+                    <li class="list-group-item mb-1">
+                        <a href="{% url 'vehiculousuario_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-car-front-fill fs-5 me-3"></i> Vehículos
+                        </a>
+                    </li>
+                    <li class="list-group-item mb-1">
+                        <a href="{% url 'caja_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-cash-coin fs-5 me-3"></i> Caja
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+
+            <div class="card mb-3">
+                <div class="card-header bg-dark text-white text-center">
+                    <i class="bi bi-gear-wide-connected me-2"></i>Mi Cuenta
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="{% url 'cambiar_password' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-key-fill me-3 fs-5"></i> Cambiar Contraseña
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'editar_correo' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-envelope-check-fill me-3 fs-5"></i> Modificar Correo
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="{% url 'desactivar_cuenta' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                            <i class="bi bi-exclamation-circle-fill me-3 fs-5"></i> Desactivar Cuenta
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <a href="{% url 'mi_stock' %}" class="text-decoration-none text-body"><span><i class="bi bi-ui-checks-grid fs-5 me-2"></i>Mi Stock</span></a>
+                </div>
+            </div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <a href="{% url 'mi_perfil' %}" class="text-decoration-none text-body"><span><i class="bi bi-person-lines-fill fs-5 me-2"></i>Mi Perfil</span></a>
+                </div>
+            </div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <a href="{% url 'mis_vehiculos' %}" class="text-decoration-none text-body"><span><i class="bi bi-car-front-fill fs-5 me-2"></i>Mis Vehículos</span></a>
+                </div>
+            </div>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <a href="#" class="btn btn-link p-0 text-decoration-none d-flex align-items-center text-body" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNotifications" id="btn-open-notifs">
+                        <span><i class="bi bi-bell-fill fs-5 me-2"></i>Notificaciones</span>
+                        <span class="badge bg-danger rounded-pill ms-2" id="badge-unread" style="display:none;">0</span>
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <form method="post" action="{% url 'logout_usuario' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger w-100">Cerrar Sesión</button>
+            </form>
+        </footer>
+    </aside>
+
+    <!-- Offcanvas para móvil (visible solo en < xs) -->
+    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+
+       <div class="offcanvas-header justify-content-center">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none text-body d-flex align-items-center">
+                <i class="bi bi-router-fill fs-2 me-2"></i>
+                <h3 class="m-0">Apinet.com</h3>
+            </a>
+            <button type="button" class="btn-close position-absolute end-0 me-2" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+
+
+        <div class="offcanvas-body p-4">            
+
+            <main>
+                {% if user.is_staff %}
+                <div class="card mb-3">
+                    <div class="card-header bg-dark text-white text-center">
+                        <i class="bi bi-person-gear me-2 fs-5"></i>Administrador
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="{% url 'lista_usuarios' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-people-fill me-3 fs-5"></i> Gestión de Usuarios
+                            </a>
+                        </li>
+                        <!-- demás links igual -->
+                        <li class="list-group-item">
+                            <a href="{% url 'proveedor_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-buildings me-3 fs-5"></i> Gestión de Proveedores
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'categoria_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-intersect me-3 fs-5"></i> Gestión de Categorías
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'producto_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-box me-3 fs-5"></i> Gestión de Productos
+                            </a>
+                        </li>
+                        <li class="list-group-item mb-1">
+                            <a href="{% url 'stock_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-clock-history me-3 fs-5"></i> Historial de Stock
+                            </a>
+                        </li>
+                        <li class="list-group-item mb-1">
+                            <a href="{% url 'perfilusuario_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-person-lines-fill fs-5 me-3"></i> Perfiles
+                            </a>
+                        </li>
+                        <li class="list-group-item mb-1">
+                            <a href="{% url 'vehiculousuario_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-car-front-fill fs-5 me-3"></i> Vehículos
+                            </a>
+                        </li>
+                        <li class="list-group-item mb-1">
+                            <a href="{% url 'caja_list' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-cash-coin fs-5 me-3"></i> Caja
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                {% endif %}
+                <div class="card mb-3">
+                    <div class="card-header bg-dark text-white text-center">
+                        <i class="bi bi-gear-wide-connected me-2"></i>Mi Cuenta
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="{% url 'cambiar_password' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-key-fill me-3 fs-5"></i> Cambiar Contraseña
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'editar_correo' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-envelope-check-fill me-3 fs-5"></i> Modificar Correo
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'desactivar_cuenta' %}" class="text-decoration-none d-flex align-items-center  text-body">
+                                <i class="bi bi-exclamation-circle-fill me-3 fs-5"></i> Desactivar Cuenta
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <a href="{% url 'mi_stock' %}" class="text-decoration-none text-body"><span><i class="bi bi-ui-checks-grid fs-5 me-2"></i>Mi Stock</span></a>
+                    </div>
+                </div>
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <a href="{% url 'mi_perfil' %}" class="text-decoration-none text-body"><span><i class="bi bi-person-lines-fill fs-5 me-2"></i>Mi Perfil</span></a>
+                    </div>
+                </div>
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <a href="{% url 'mis_vehiculos' %}" class="text-decoration-none text-body"><span><i class="bi bi-car-front-fill fs-5 me-2"></i>Mis Vehículos</span></a>
+                    </div>
+                </div>
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <a href="#" class="btn btn-link p-0 text-decoration-none d-flex align-items-center text-body" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNotifications" id="btn-open-notifs">
+                            <span><i class="bi bi-bell-fill fs-5 me-2"></i>Notificaciones</span>
+                            <span class="badge bg-danger rounded-pill ms-2" id="badge-unread" style="display:none;">0</span>
+                        </a>
+                    </div>
+                </div>
+            </main>
+
+            <footer>
+                <form method="post" action="{% url 'logout_usuario' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger w-100">Cerrar Sesión</button>
+                </form>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-area">
+
+        <div class="container-fluid">
+            
+            
+            {% if user.is_staff %}
+                <a class="navbar-brand">Bienvenido Administrador</a>
+            {% else %}
+                <a class="navbar-brand">Bienvenido {{ user.email }}</a>
+            {% endif %}
+                
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link d-none d-md-block"><span id="reloj"></span></a>
+                </li>
+                <button id="btn-toggle-theme" class="btn btn-link nav-link" aria-label="Cambiar tema">
+                    <i id="icono-tema" class="bi bi-moon-stars-fill"></i>
+                </button>
+            </ul>
+                          
+            <!-- Botón para abrir offcanvas sidebar móvil -->
+            <button class="btn btn-outline-primary d-lg-none mx-3 me-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar" aria-label="Abrir menú">
+                <i class="bi bi-list"></i>
+            </button>
+
+            
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <section class="main-section">
+        {% block section2 %}{% endblock section2 %}
+    </section>
+
+    <!-- Offcanvas Notificaciones -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotifications" aria-labelledby="offcanvasNotificationsLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasNotificationsLabel">Notificaciones Pendientes</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="contenedor-notificaciones">
+                <!-- Aquí se cargan dinámicamente las notificaciones -->
+            </div>
+            <hr />
+            <a href="{% url 'notificaciones_historial' %}" class="btn btn-outline-secondary btn-sm w-100">Ver historial completo</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="{% static 'js/tema.js' %}"></script>
+    <script src="{% static 'js/reloj.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{% static 'js/notificaciones.js' %}"></script>
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

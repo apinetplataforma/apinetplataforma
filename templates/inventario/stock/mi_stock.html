@@ -1,0 +1,142 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}
+Mi Stock
+{% endblock %}
+
+{% block section2 %}
+<div class="container mt-4">
+
+    <!-- ===================================================== -->
+    <!-- CARD DE REGLAS Y PROCEDIMIENTOS                       -->
+    <!-- ===================================================== -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header text-bg-dark">
+            <h5 class="mb-0">Reglas y Procedimientos</h5>
+        </div>
+        <div class="card-body">
+            <ul>
+                <li class="mb-3">Cada quien es responsable de su material.</li>
+                <li class="mb-3">Todo material gastado queda reportado en el historial como prueba.</li>
+                <li class="mb-3">Se registra cantidad de material gastado en ticket.</li>
+                <li class="mb-3">Las transferencias entre compañeros se le piden al administrador.</li>                
+                <li class="mb-3">Si te equivocas pidele al administrador que elimine el movimiento y lo haces nuevamente.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- TÍTULO PRINCIPAL Y BOTÓN -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3><i class="bi bi-box me-2"></i>Mis productos</h3>
+
+        <a href="{% url 'restar_producto' %}" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Selecciona el producto para dar salida">
+            Registrar Salida
+        </a>
+    </div>
+
+    <!-- TABLA PRINCIPAL DE STOCK -->
+    {% if stocks %}
+        <div class="table-responsive mb-5">
+            <table class="table table-striped table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in stocks %}
+                    <tr>
+                        <td>{{ item.producto.nombre }}</td>
+                        <td>{{ item.cantidad }}</td>
+                        <td>{{ item.created|date:"d/m/Y" }}</td>
+                        <td>{{ item.created|date:" H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINACIÓN -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mt-4">
+
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Anterior</span>
+                </li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">Siguiente</span>
+                </li>
+                {% endif %}
+
+            </ul>
+        </nav>
+
+    {% else %}
+        <div class="alert alert-info text-center">
+            No tienes productos en tu stock.
+        </div>
+    {% endif %}
+
+    <!-- ------------------------------------------------------ -->
+    <!-- TABLA HISTORIAL DE RESTAS -->
+    <!-- ------------------------------------------------------ -->
+
+    <h3 class="mt-5 mb-3 text-danger">Aqui aparece en que se gasto el material</h3>
+
+    {% if historial_restas %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad Restada</th>
+                        <th>Motivo</th>
+                        <th>Referencia</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mov in historial_restas %}
+                    <tr>
+                        <td>{{ mov.producto.nombre }}</td>
+                        <td>{{ mov.cantidad_movida }}</td>
+                        <td>{{ mov.get_motivo_display }}</td>
+                        <td>{{ mov.motivo_personalizado|default:"—" }}</td>
+                        <td>{{ mov.created|date:"d/m/Y" }}</td>
+                        <td>{{ mov.created|date:" H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+        <div class="alert alert-secondary text-center mt-3">
+            No hay restas registradas todavía.
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

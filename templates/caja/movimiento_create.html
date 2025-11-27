@@ -1,0 +1,43 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Nuevo Movimiento{% endblock %}
+
+{% block section2 %}
+<div class="container mt-4">
+    <h3 class="mb-3">Registrar Movimiento</h3>
+
+    <form action="" method="post">
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <div class="mb-3">
+            <label class="form-label">Tipo de movimiento</label>
+            {{ form.tipo_movimiento }}
+            {{ form.tipo_movimiento.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Motivo</label>
+            {{ form.motivo_movimiento }}
+            {{ form.motivo_movimiento.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Cantidad movida</label>
+            {{ form.cantidad_movida }}
+            {{ form.cantidad_movida.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Información adicional</label>
+            {{ form.info_adicional }}
+            {{ form.info_adicional.errors }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="{% url 'caja_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}

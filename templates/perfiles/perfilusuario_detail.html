@@ -1,0 +1,165 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %}Detalle Perfil{% endblock %}
+
+{% block section2 %}
+<div class="container mt-4">
+
+    <div class="d-flex gap-2 justify-content-end ">
+        <a href="{% url 'perfilusuario_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left fs-5 me-2"></i>Volver al listado
+        </a>
+        <a href="{% url 'perfilusuario_update' perfil.pk %}" class="btn btn-warning"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="Editar">
+            <i class="bi bi-pencil fs-5"></i>
+        </a>
+        
+    </div>
+
+    <!-- Fotos en fila horizontal con modal para ampliar -->
+    <div class="mb-4 d-flex flex-wrap gap-3 justify-content-start">
+        {% for foto, titulo in fotos_perfil %}
+            <div class="text-center" style="min-width: 150px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalFoto{{ forloop.counter }}">
+                <strong>{{ titulo }}</strong><br>
+                {% if foto %}
+                    <img src="{{ foto.url }}" class="img-thumbnail rounded" style="max-height: 150px; max-width: 150px; object-fit: cover;">
+                {% else %}
+                    <p class="text-muted">No disponible</p>
+                {% endif %}
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalFoto{{ forloop.counter }}" tabindex="-1" aria-labelledby="modalFotoLabel{{ forloop.counter }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalFotoLabel{{ forloop.counter }}">{{ titulo }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            {% if foto %}
+                                <img src="{{ foto.url }}" class="img-fluid rounded" style="max-height: 80vh; object-fit: contain;">
+                            {% else %}
+                                <p class="text-muted">No disponible</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Información en 3 columnas -->
+    <div class="row g-4">
+        <!-- Columna 1 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Información básica</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Usuario</dt>
+                        <dd class="col-sm-7">{{ perfil.usuario.email }}</dd>
+
+                        <dt class="col-sm-5">Nombres</dt>
+                        <dd class="col-sm-7">{{ perfil.nombres }}</dd>
+
+                        <dt class="col-sm-5">Apellidos</dt>
+                        <dd class="col-sm-7">{{ perfil.apellidos }}</dd>
+
+                        <dt class="col-sm-5">Dirección</dt>
+                        <dd class="col-sm-7">{{ perfil.direccion }}</dd>
+
+                        <dt class="col-sm-5">Teléfono</dt>
+                        <dd class="col-sm-7">{{ perfil.telefono }}</dd>
+
+                        <dt class="col-sm-5">WhatsApp</dt>
+                        <dd class="col-sm-7">{{ perfil.whatsapp }}</dd>
+
+                        <dt class="col-sm-5">Fecha de nacimiento</dt>
+                        <dd class="col-sm-7">{{ perfil.fecha_nacimiento }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna 2 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Información laboral</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Cargo</dt>
+                        <dd class="col-sm-7">{{ perfil.get_cargo_display }}</dd>
+
+                        <dt class="col-sm-5">Fecha ingreso empresa</dt>
+                        <dd class="col-sm-7">{{ perfil.fecha_ingreso_empresa }}</dd>
+
+                        <dt class="col-sm-5">Fecha retiro empresa</dt>
+                        <dd class="col-sm-7">{{ perfil.fecha_retiro_empresa }}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Formación y cursos</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Nivel educativo</dt>
+                        <dd class="col-sm-7">{{ perfil.get_nivel_educativo_display }}</dd>
+
+                        <dt class="col-sm-5">Curso altura</dt>
+                        <dd class="col-sm-7">{% if perfil.curso_altura %}Sí{% else %}No{% endif %}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna 3 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Estado civil y familia</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Estado civil</dt>
+                        <dd class="col-sm-7">{{ perfil.get_estado_civil_display }}</dd>
+
+                        <dt class="col-sm-5">Cónyuge</dt>
+                        <dd class="col-sm-7">{% if perfil.conyugue %}Sí{% else %}No{% endif %}</dd>
+
+                        <dt class="col-sm-5">Nombre cónyuge</dt>
+                        <dd class="col-sm-7">{{ perfil.nombre_conyugue }}</dd>
+
+                        <dt class="col-sm-5">Teléfono cónyuge</dt>
+                        <dd class="col-sm-7">{{ perfil.telefono_conyugue }}</dd>
+
+                        <dt class="col-sm-5">Hijos</dt>
+                        <dd class="col-sm-7">{% if perfil.hijos %}Sí{% else %}No{% endif %}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Otros datos</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Género</dt>
+                        <dd class="col-sm-7">{{ perfil.get_genero_display }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+</div>
+{% endblock %}
